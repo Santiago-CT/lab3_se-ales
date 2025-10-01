@@ -1,0 +1,54 @@
+@startuml
+!theme vibrant
+
+actor Usuario
+
+participant main.py as Main
+participant "GUI (App)" as App
+participant AudioHandler as Audio
+participant FeatureExtractor as Features
+
+skinparam sequence {
+    ParticipantBackgroundColor #EFEFEF
+    ActorBackgroundColor #BDE0EB
+}
+
+title Secuencia de Interacción Completa
+
+Usuario -> Main: Ejecuta el script
+activate Main
+Main -> App: **new** ()
+activate App
+App --> Main: (Ventana creada)
+deactivate Main
+
+Usuario -> App: Graba muestras para Palabra 1 y 2
+loop Para cada grabación
+    App -> Audio: record_audio()
+    activate Audio
+    Audio --> App: retorna audio_data
+    deactivate Audio
+    App -> Features: process_signal(audio_data)
+    activate Features
+    Features --> App: retorna (freqs, mag, energies)
+    deactivate Features
+    App -> App: update_plots()
+end
+
+Usuario -> App: Clic en "ENTRENAR"
+App -> App: Calcula energías promedio
+App --> Usuario: Muestra umbrales en la GUI
+
+Usuario -> App: Clic en "RECONOCER"
+App -> Audio: record_audio()
+activate Audio
+Audio --> App: retorna audio_data
+deactivate Audio
+App -> Features: process_signal(audio_data)
+activate Features
+Features --> App: retorna (freqs, mag, energies)
+deactivate Features
+App -> App: Compara energías con umbrales
+App --> Usuario: Muestra resultado ("Palabra 1" o "Palabra 2")
+
+@enduml

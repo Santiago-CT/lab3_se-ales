@@ -1,0 +1,47 @@
+@startuml
+!theme vibrant
+
+title Flujo Lógico del Reconocedor de Voz
+
+start
+:Inicializar GUI y variables de estado
+(listas de grabaciones, umbrales);
+
+repeat
+  :Esperar acción del usuario;
+  
+  if (¿Clic en "Grabar Muestra"?) then (sí)
+    :Grabar audio del micrófono;
+    :Añadir grabación a la lista de la palabra correspondiente;
+    :Actualizar contador y gráficos en la GUI;
+    
+  elseif (¿Clic en "ENTRENAR"?) then (sí)
+    if (¿Hay suficientes muestras grabadas?) then (sí)
+      :Calcular el vector de energía promedio para cada palabra;
+      :Guardar estos promedios como los umbrales del sistema;
+      :Actualizar la GUI para mostrar que el sistema está entrenado;
+    else (no)
+      :Mostrar mensaje de advertencia al usuario;
+    endif
+    
+  elseif (¿Clic en "RECONOCER"?) then (sí)
+    if (¿El sistema está entrenado?) then (sí)
+      :Grabar nuevo audio;
+      :Calcular su vector de energía;
+      :Calcular la distancia a los umbrales de Palabra 1 y Palabra 2;
+      if (¿Distancia a Palabra 1 es menor?) then (sí)
+        :Clasificar como "Palabra 1";
+      else (no)
+        :Clasificar como "Palabra 2";
+      endif
+      :Mostrar resultado en la GUI;
+    else (no)
+      :Mostrar mensaje de error "Sistema no entrenado";
+    endif
+  endif
+  
+repeat while (Usuario no cierra la ventana)
+
+stop
+
+@enduml

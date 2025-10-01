@@ -1,0 +1,45 @@
+@startuml
+!theme vibrant
+
+title Diagrama de Clases: Reconocimiento de Voz
+
+skinparam class {
+    BackgroundColor #AliceBlue
+    ArrowColor #2E6DA4
+    BorderColor #2E6DA4
+}
+
+package "Punto de Entrada" {
+  object main
+}
+
+package "Interfaz Gráfica" {
+  class App <<gui.py>> {
+    + root: tk.Tk
+    + thresholds: dict
+    --
+    + __init__()
+    + record_sample()
+    + train_system()
+    + recognize()
+    - update_plots()
+  }
+}
+
+package "Módulos de Soporte" {
+  class AudioHandler <<module>> {
+    .. Static Methods ..
+    + record_audio(duration): ndarray
+  }
+
+  class FeatureExtractor <<module>> {
+    .. Static Methods ..
+    + process_signal(audio_data): tuple
+  }
+}
+
+main ..> App : "crea e inicia"
+App ..> AudioHandler : "utiliza para grabar"
+App ..> FeatureExtractor : "utiliza para procesar"
+
+@enduml
